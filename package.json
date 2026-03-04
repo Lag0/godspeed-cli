@@ -28,6 +28,7 @@
   ],
   "license": "MIT",
   "dependencies": {
+    "@lag0/godspeed-sdk": "link:../godspeed-sdk",
     "commander": "^14.0.3",
     "picocolors": "^1.1.1"
   },
