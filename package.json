@@ -1,0 +1,40 @@
+{
+  "name": "@syxs/godspeed-cli",
+  "version": "0.1.0",
+  "description": "Godspeed task management CLI",
+  "main": "dist/index.js",
+  "bin": {
+    "godspeed": "dist/index.js"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "pnpm run clean && tsc -p tsconfig.build.json",
+    "clean": "rm -rf dist",
+    "type-check": "tsc --noEmit",
+    "lint": "biome check src/",
+    "test": "vitest run",
+    "smoke": "node dist/index.js --help"
+  },
+  "keywords": [
+    "godspeed",
+    "cli",
+    "tasks"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "commander": "^14.0.3",
+    "picocolors": "^1.1.1"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.4.5",
+    "@types/node": "^22.19.13",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.18"
+  }
+}
