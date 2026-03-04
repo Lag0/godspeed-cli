@@ -21,6 +21,10 @@ export const createProgram = (): Command => {
   return program;
 };
 
+/** Returns true for CommanderError codes that represent successful exits (help/version display). */
+const isSuccessfulCommanderExit = (error: CommanderError): boolean =>
+  error.code === 'commander.helpDisplayed' || error.code === 'commander.version';
+
 /** Handles CLI errors by writing structured output to stderr and setting exit code. */
 export const handleCliError = (error: unknown): void => {
   if (isCommandRuntimeError(error)) {
@@ -30,6 +34,10 @@ export const handleCliError = (error: unknown): void => {
   }
 
   if (error instanceof CommanderError) {
+    if (isSuccessfulCommanderExit(error)) {
+      // Help or version displayed successfully — no error output needed
+      return;
+    }
     const runtimeError = toCommandRuntimeError(error, {
       code: 'INVALID_INPUT',
       message: error.message,
@@ -52,7 +60,14 @@ export const handleCliError = (error: unknown): void => {
 export const runCli = async (argv: string[] = process.argv): Promise<void> => {
   const program = createProgram();
   if (argv.slice(2).length === 0) {
-    program.outputHelp();
+    try {
+      program.outputHelp();
+    } catch (error) {
+      // exitOverride() throws commander.helpDisplayed — this is expected and successful
+      if (!(error instanceof CommanderError && isSuccessfulCommanderExit(error))) {
+        handleCliError(error);
+      }
+    }
     return;
   }
   try {
