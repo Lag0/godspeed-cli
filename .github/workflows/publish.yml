@@ -45,12 +45,12 @@ jobs:
 
       - name: Verify SDK dependency exists on npm
         run: |
-          npm view "@lag0/godspeed-sdk@${{ steps.pkg.outputs.sdk_version }}" version > /dev/null
+          NODE_AUTH_TOKEN="" npm view "@lag0/godspeed-sdk@${{ steps.pkg.outputs.sdk_version }}" version > /dev/null
 
       - name: Skip when version already published
         id: exists
         run: |
-          if npm view "${{ steps.pkg.outputs.name }}@${{ steps.pkg.outputs.version }}" version > /dev/null 2>&1; then
+          if NODE_AUTH_TOKEN="" npm view "${{ steps.pkg.outputs.name }}@${{ steps.pkg.outputs.version }}" version > /dev/null 2>&1; then
             echo "published=true" >> "$GITHUB_OUTPUT"
             echo "Version already published; skipping."
           else
