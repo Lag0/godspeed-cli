@@ -25,8 +25,13 @@ import * as fs from "node:fs";
 import { handleDoctorCommand } from "../../commands/doctor";
 import * as tokenUtils from "../../utils/token";
 
+const ANSI_ESCAPE_PATTERN = new RegExp(
+	`${String.fromCharCode(27)}\\[[\\d;]*m`,
+	"g",
+);
+
 const stripAnsi = (value: string): string =>
-	value.replaceAll(/\u001B\[[\d;]*m/g, "");
+	value.replaceAll(ANSI_ESCAPE_PATTERN, "");
 
 const originalVersionsDescriptor = Object.getOwnPropertyDescriptor(
 	process,
@@ -148,9 +153,9 @@ describe("handleDoctorCommand (DIAG-01)", () => {
 		) as {
 			checks: Array<{ name: string; status: "ok" | "warn" | "fail" }>;
 		};
-		expect(
-			report.checks.find((check) => check.name === "config")?.status,
-		).toBe("ok");
+		expect(report.checks.find((check) => check.name === "config")?.status).toBe(
+			"ok",
+		);
 	});
 
 	it("sets config check to warn when config directory is missing or unwritable", async () => {
@@ -165,9 +170,9 @@ describe("handleDoctorCommand (DIAG-01)", () => {
 		) as {
 			checks: Array<{ name: string; status: "ok" | "warn" | "fail" }>;
 		};
-		expect(
-			report.checks.find((check) => check.name === "config")?.status,
-		).toBe("warn");
+		expect(report.checks.find((check) => check.name === "config")?.status).toBe(
+			"warn",
+		);
 	});
 
 	it("sets runtime check to ok when Node major version is 18 or higher", async () => {
