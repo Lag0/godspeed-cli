@@ -26,12 +26,12 @@ import { handleListsDuplicateCommand } from '../../commands/lists/duplicate';
 
 describe('handleListsDuplicateCommand (LIST-02)', () => {
   beforeEach(() => {
-    vi.restoreAllMocks();
+    vi.clearAllMocks();
     delete process.env.GODSPEED_BASE_URL;
   });
 
   afterEach(() => {
-    vi.restoreAllMocks();
+    vi.clearAllMocks();
     delete process.env.GODSPEED_BASE_URL;
   });
 

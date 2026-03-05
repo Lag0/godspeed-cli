@@ -26,12 +26,12 @@ import { handleListsListCommand } from '../../commands/lists/list';
 
 describe('handleListsListCommand (LIST-01)', () => {
   beforeEach(() => {
-    vi.restoreAllMocks();
+    vi.clearAllMocks();
     delete process.env.GODSPEED_BASE_URL;
   });
 
   afterEach(() => {
-    vi.restoreAllMocks();
+    vi.clearAllMocks();
     delete process.env.GODSPEED_BASE_URL;
   });
 
