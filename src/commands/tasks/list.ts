@@ -1,7 +1,15 @@
-import { createClient, listTasks, type Task, type TasksResponse } from "@lag0/godspeed-sdk";
+import {
+	createClient,
+	listTasks,
+	type Task,
+	type TasksResponse,
+} from "@lag0/godspeed-sdk";
 import pc from "picocolors";
 import { resolveToken } from "../../utils/token";
-import { createCommandContext, writeCommandOutput } from "../runtime/command-context";
+import {
+	createCommandContext,
+	writeCommandOutput,
+} from "../runtime/command-context";
 import { withCommandHandler } from "../runtime/with-command-handler";
 
 export interface TasksListOptions {
@@ -25,12 +33,14 @@ const formatTasksReadable = (result: TasksResponse): string => {
 	return result.tasks.map(formatTaskLine).join("\n");
 };
 
-export const handleTasksListCommand = async (options: TasksListOptions): Promise<void> => {
+export const handleTasksListCommand = async (
+	options: TasksListOptions,
+): Promise<void> => {
 	const context = createCommandContext(options);
 
 	await withCommandHandler(async () => {
 		const token = resolveToken();
-		const baseUrl = process.env["GODSPEED_BASE_URL"];
+		const baseUrl = process.env.GODSPEED_BASE_URL;
 		const client = createClient({ token, baseUrl });
 
 		const status = options.status ?? (options.all ? undefined : "incomplete");

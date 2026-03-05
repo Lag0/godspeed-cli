@@ -1,7 +1,10 @@
 import { createClient, getTask, type Task } from "@lag0/godspeed-sdk";
 import pc from "picocolors";
 import { resolveToken } from "../../utils/token";
-import { createCommandContext, writeCommandOutput } from "../runtime/command-context";
+import {
+	createCommandContext,
+	writeCommandOutput,
+} from "../runtime/command-context";
 import { withCommandHandler } from "../runtime/with-command-handler";
 
 export interface TasksGetOptions {
@@ -37,7 +40,7 @@ export const handleTasksGetCommand = async (
 
 	await withCommandHandler(async () => {
 		const token = resolveToken();
-		const baseUrl = process.env["GODSPEED_BASE_URL"];
+		const baseUrl = process.env.GODSPEED_BASE_URL;
 		const client = createClient({ token, baseUrl });
 
 		const result = await getTask(client, taskId);

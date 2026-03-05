@@ -1,7 +1,15 @@
-import { createClient, type Task, type UpdateTaskRequest, updateTask } from "@lag0/godspeed-sdk";
+import {
+	createClient,
+	type Task,
+	type UpdateTaskRequest,
+	updateTask,
+} from "@lag0/godspeed-sdk";
 import pc from "picocolors";
 import { resolveToken } from "../../utils/token";
-import { createCommandContext, writeCommandOutput } from "../runtime/command-context";
+import {
+	createCommandContext,
+	writeCommandOutput,
+} from "../runtime/command-context";
 import { CommandRuntimeError } from "../runtime/command-error";
 import { withCommandHandler } from "../runtime/with-command-handler";
 
@@ -54,7 +62,8 @@ const buildUpdateRequest = (options: TasksUpdateOptions): UpdateTaskRequest => {
 	if (options.dueAt !== undefined) request.due_at = options.dueAt;
 	if (options.complete) request.is_complete = true;
 	if (options.incomplete) request.is_complete = false;
-	if (options.addLabel && options.addLabel.length > 0) request.add_label_names = options.addLabel;
+	if (options.addLabel && options.addLabel.length > 0)
+		request.add_label_names = options.addLabel;
 	if (options.removeLabel && options.removeLabel.length > 0)
 		request.remove_label_names = options.removeLabel;
 
@@ -81,13 +90,14 @@ export const handleTasksUpdateCommand = async (
 			throw new CommandRuntimeError({
 				code: "INVALID_INPUT",
 				message: "No update options provided.",
-				suggestion: "Pass at least one option. Run `godspeed tasks update --help`",
+				suggestion:
+					"Pass at least one option. Run `godspeed tasks update --help`",
 				exitCode: 1,
 			});
 		}
 
 		const token = resolveToken();
-		const baseUrl = process.env["GODSPEED_BASE_URL"];
+		const baseUrl = process.env.GODSPEED_BASE_URL;
 		const client = createClient({ token, baseUrl });
 		const request = buildUpdateRequest(options);
 		const result = await updateTask(client, taskId, request);

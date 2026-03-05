@@ -1,7 +1,15 @@
-import { createClient, createTask, type CreateTaskRequest, type Task } from "@lag0/godspeed-sdk";
+import {
+	type CreateTaskRequest,
+	createClient,
+	createTask,
+	type Task,
+} from "@lag0/godspeed-sdk";
 import pc from "picocolors";
 import { resolveToken } from "../../utils/token";
-import { createCommandContext, writeCommandOutput } from "../runtime/command-context";
+import {
+	createCommandContext,
+	writeCommandOutput,
+} from "../runtime/command-context";
 import { withCommandHandler } from "../runtime/with-command-handler";
 
 export interface TasksCreateOptions {
@@ -34,12 +42,14 @@ const formatTaskReadable = (task: Task): string => {
 	return lines.join("\n");
 };
 
-export const handleTasksCreateCommand = async (options: TasksCreateOptions): Promise<void> => {
+export const handleTasksCreateCommand = async (
+	options: TasksCreateOptions,
+): Promise<void> => {
 	const context = createCommandContext(options);
 
 	await withCommandHandler(async () => {
 		const token = resolveToken();
-		const baseUrl = process.env["GODSPEED_BASE_URL"];
+		const baseUrl = process.env.GODSPEED_BASE_URL;
 		const client = createClient({ token, baseUrl });
 
 		const request: CreateTaskRequest = {
@@ -47,7 +57,9 @@ export const handleTasksCreateCommand = async (options: TasksCreateOptions): Pro
 			...(options.listId ? { list_id: options.listId } : {}),
 			...(options.notes ? { notes: options.notes } : {}),
 			...(options.dueAt ? { due_at: options.dueAt } : {}),
-			...(options.label && options.label.length > 0 ? { label_names: options.label } : {}),
+			...(options.label && options.label.length > 0
+				? { label_names: options.label }
+				: {}),
 		};
 
 		const result = await createTask(client, request);
