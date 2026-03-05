@@ -2,6 +2,10 @@ import * as fs from 'node:fs';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { CONFIG_FILE, LEGACY_CONFIG_FILE } from '../../utils/config';
 
+vi.mock('node:fs', () => ({
+  existsSync: vi.fn(),
+}));
+
 vi.mock('../../utils/token', async (importOriginal) => {
   const actual = await importOriginal<typeof import('../../utils/token')>();
   return {
@@ -19,10 +23,10 @@ describe('handleStatusCommand (AUTH-03)', () => {
   let existsSpy: ReturnType<typeof vi.spyOn>;
 
   beforeEach(() => {
-    vi.restoreAllMocks();
+    vi.clearAllMocks();
     delete process.env['GODSPEED_TOKEN'];
     stdoutSpy = vi.spyOn(process.stdout, 'write').mockImplementation(() => true);
-    existsSpy = vi.spyOn(fs, 'existsSync').mockReturnValue(false);
+    existsSpy = vi.mocked(fs.existsSync).mockReturnValue(false);
   });
 
   afterEach(() => {

@@ -1,6 +1,6 @@
 import * as fs from 'node:fs';
 import { CommandRuntimeError } from '../commands/runtime/command-error';
-import { CONFIG_DIR, CONFIG_FILE } from './config';
+import { CONFIG_DIR, CONFIG_FILE, LEGACY_CONFIG_FILE } from './config';
 
 interface StoredConfig {
   token?: string;
@@ -39,11 +39,30 @@ export const deleteStoredToken = (): void => {
   }
 };
 
+/** Migrates token from legacy config path when modern config does not exist yet. */
+export const migrateLegacyTokenIfNeeded = (): void => {
+  if (fs.existsSync(CONFIG_FILE)) return;
+  if (!fs.existsSync(LEGACY_CONFIG_FILE)) return;
+
+  try {
+    const raw = fs.readFileSync(LEGACY_CONFIG_FILE, 'utf-8');
+    const parsed = JSON.parse(raw) as StoredConfig;
+    if (typeof parsed.token === 'string') {
+      saveToken(parsed.token);
+      fs.unlinkSync(LEGACY_CONFIG_FILE);
+    }
+  } catch {
+    // Swallow migration errors to avoid blocking command execution
+  }
+};
+
 /**
  * Resolves token via priority chain: GODSPEED_TOKEN env var → config file → throw.
  * @throws CommandRuntimeError with code AUTH_REQUIRED if no token found
  */
 export const resolveToken = (): string => {
+  migrateLegacyTokenIfNeeded();
+
   const envToken = process.env['GODSPEED_TOKEN'];
   if (envToken) return envToken;
 

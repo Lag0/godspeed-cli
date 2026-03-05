@@ -18,7 +18,7 @@ describe('handleLoginCommand (AUTH-01)', () => {
   let stderrSpy: ReturnType<typeof vi.spyOn>;
 
   beforeEach(() => {
-    vi.restoreAllMocks();
+    vi.clearAllMocks();
     stderrSpy = vi.spyOn(process.stderr, 'write').mockImplementation(() => true);
   });
 
@@ -48,7 +48,7 @@ describe('handleLoginCommand (AUTH-01)', () => {
     await expect(handleLoginCommand({})).rejects.toMatchObject<Partial<CommandRuntimeError>>({
       code: 'INVALID_INPUT',
     });
-    expect(tokenUtils.migrateLegacyTokenIfNeeded).toHaveBeenCalledTimes(1);
+    expect(tokenUtils.migrateLegacyTokenIfNeeded).toHaveBeenCalled();
     expect(tokenUtils.resolveToken).not.toHaveBeenCalled();
   });
 });

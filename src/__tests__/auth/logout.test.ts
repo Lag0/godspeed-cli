@@ -2,6 +2,11 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import * as fs from 'node:fs';
 import { LEGACY_CONFIG_FILE } from '../../utils/config';
 
+vi.mock('node:fs', () => ({
+  existsSync: vi.fn(),
+  unlinkSync: vi.fn(),
+}));
+
 vi.mock('../../utils/token', async (importOriginal) => {
   const actual = await importOriginal<typeof import('../../utils/token')>();
   return {
@@ -21,10 +26,10 @@ describe('handleLogoutCommand (AUTH-02)', () => {
   let unlinkSpy: ReturnType<typeof vi.spyOn>;
 
   beforeEach(() => {
-    vi.restoreAllMocks();
+    vi.clearAllMocks();
     stdoutSpy = vi.spyOn(process.stdout, 'write').mockImplementation(() => true);
-    existsSpy = vi.spyOn(fs, 'existsSync').mockReturnValue(true);
-    unlinkSpy = vi.spyOn(fs, 'unlinkSync').mockImplementation(() => undefined);
+    existsSpy = vi.mocked(fs.existsSync).mockReturnValue(true);
+    unlinkSpy = vi.mocked(fs.unlinkSync).mockImplementation(() => undefined);
   });
 
   afterEach(() => {
