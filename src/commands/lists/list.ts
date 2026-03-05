@@ -1,8 +1,8 @@
 import {
 	createClient,
-	listLists,
 	type List,
 	type ListsResponse,
+	listLists,
 } from "@lag0/godspeed-sdk";
 import pc from "picocolors";
 import { resolveToken } from "../../utils/token";
