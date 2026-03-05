@@ -1,71 +1,83 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { CONFIG_FILE, LEGACY_CONFIG_FILE } from '../../utils/config';
-import * as tokenUtils from '../../utils/token';
-
-const fsMocks = vi.hoisted(() => ({
-  existsSync: vi.fn(),
-  readFileSync: vi.fn(),
-  unlinkSync: vi.fn(),
-  mkdirSync: vi.fn(),
-  writeFileSync: vi.fn(),
-  chmodSync: vi.fn(),
-}));
-
-vi.mock('node:fs', () => fsMocks);
-
 import * as fs from 'node:fs';
+import * as os from 'node:os';
+import * as path from 'node:path';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-describe('resolveToken legacy migration (AUTH-04)', () => {
-  const originalEnv = { ...process.env };
+describe('token migration (AUTH-04)', () => {
+  let tempDir: string;
+  let testConfigDir: string;
+  let testConfigFile: string;
+  let testLegacyConfigFile: string;
 
   beforeEach(() => {
-    vi.restoreAllMocks();
-    process.env = { ...originalEnv };
-    delete process.env.GODSPEED_TOKEN;
+    vi.resetModules();
+    tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'godspeed-token-test-'));
+    testConfigDir = path.join(tempDir, '.godspeed');
+    testConfigFile = path.join(testConfigDir, 'config.json');
+    testLegacyConfigFile = path.join(tempDir, '.godspeed-sdk', 'config.json');
+
+    vi.doMock('../../utils/config', () => ({
+      CONFIG_DIR: testConfigDir,
+      CONFIG_FILE: testConfigFile,
+      LEGACY_CONFIG_FILE: testLegacyConfigFile,
+    }));
+
+    delete process.env['GODSPEED_TOKEN'];
   });
 
   afterEach(() => {
-    process.env = { ...originalEnv };
-    vi.restoreAllMocks();
+    vi.doUnmock('../../utils/config');
+    delete process.env['GODSPEED_TOKEN'];
+    fs.rmSync(tempDir, { recursive: true, force: true });
   });
 
-  it('migrates legacy token when legacy exists and new config is absent', () => {
-    const saveTokenSpy = vi.spyOn(tokenUtils, 'saveToken').mockImplementation(() => undefined);
+  it('migrates legacy token to modern config and removes legacy file', async () => {
+    fs.mkdirSync(path.dirname(testLegacyConfigFile), { recursive: true });
+    fs.writeFileSync(testLegacyConfigFile, JSON.stringify({ token: 'legacy-token' }), 'utf-8');
 
-    vi.mocked(fs.existsSync).mockImplementation((path) => {
-      if (path === CONFIG_FILE) return false;
-      if (path === LEGACY_CONFIG_FILE) return true;
-      return false;
-    });
+    const tokenUtils = await import('../../utils/token');
+    tokenUtils.migrateLegacyTokenIfNeeded();
 
-    vi.mocked(fs.readFileSync).mockImplementation((path) => {
-      if (path === LEGACY_CONFIG_FILE) return JSON.stringify({ token: 'legacy-123' });
-      throw new Error(`Unexpected read: ${String(path)}`);
-    });
-
-    const token = tokenUtils.resolveToken();
-    expect(token).toBe('legacy-123');
-    expect(saveTokenSpy).toHaveBeenCalledWith('legacy-123');
-    expect(fs.unlinkSync).toHaveBeenCalledWith(LEGACY_CONFIG_FILE);
+    expect(fs.existsSync(testConfigFile)).toBe(true);
+    expect(JSON.parse(fs.readFileSync(testConfigFile, 'utf-8'))).toEqual({ token: 'legacy-token' });
+    expect(fs.existsSync(testLegacyConfigFile)).toBe(false);
   });
 
-  it('skips migration when new config already exists', () => {
-    const saveTokenSpy = vi.spyOn(tokenUtils, 'saveToken').mockImplementation(() => undefined);
+  it('skips migration when modern config already exists', async () => {
+    fs.mkdirSync(path.dirname(testConfigFile), { recursive: true });
+    fs.writeFileSync(testConfigFile, JSON.stringify({ token: 'modern-token' }), 'utf-8');
+    fs.mkdirSync(path.dirname(testLegacyConfigFile), { recursive: true });
+    fs.writeFileSync(testLegacyConfigFile, JSON.stringify({ token: 'legacy-token' }), 'utf-8');
 
-    vi.mocked(fs.existsSync).mockImplementation((path) => {
-      if (path === CONFIG_FILE) return true;
-      if (path === LEGACY_CONFIG_FILE) return true;
-      return false;
-    });
+    const tokenUtils = await import('../../utils/token');
+    tokenUtils.migrateLegacyTokenIfNeeded();
 
-    vi.mocked(fs.readFileSync).mockImplementation((path) => {
-      if (path === CONFIG_FILE) return JSON.stringify({ token: 'new-456' });
-      throw new Error(`Unexpected read: ${String(path)}`);
-    });
+    expect(JSON.parse(fs.readFileSync(testConfigFile, 'utf-8'))).toEqual({ token: 'modern-token' });
+    expect(fs.existsSync(testLegacyConfigFile)).toBe(true);
+  });
 
+  it('swallows migration errors from invalid legacy config', async () => {
+    fs.mkdirSync(path.dirname(testLegacyConfigFile), { recursive: true });
+    fs.writeFileSync(testLegacyConfigFile, '{invalid-json', 'utf-8');
+
+    const tokenUtils = await import('../../utils/token');
+
+    expect(() => tokenUtils.migrateLegacyTokenIfNeeded()).not.toThrow();
+    expect(fs.existsSync(testConfigFile)).toBe(false);
+    expect(fs.existsSync(testLegacyConfigFile)).toBe(true);
+  });
+
+  it('calls migration first in resolveToken, then preserves env token precedence', async () => {
+    fs.mkdirSync(path.dirname(testLegacyConfigFile), { recursive: true });
+    fs.writeFileSync(testLegacyConfigFile, JSON.stringify({ token: 'legacy-token' }), 'utf-8');
+    process.env['GODSPEED_TOKEN'] = 'env-token';
+
+    const tokenUtils = await import('../../utils/token');
     const token = tokenUtils.resolveToken();
-    expect(token).toBe('new-456');
-    expect(saveTokenSpy).not.toHaveBeenCalled();
-    expect(fs.unlinkSync).not.toHaveBeenCalled();
+
+    expect(token).toBe('env-token');
+    expect(fs.existsSync(testConfigFile)).toBe(true);
+    expect(JSON.parse(fs.readFileSync(testConfigFile, 'utf-8'))).toEqual({ token: 'legacy-token' });
+    expect(fs.existsSync(testLegacyConfigFile)).toBe(false);
   });
 });
