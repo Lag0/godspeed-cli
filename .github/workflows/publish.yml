@@ -1,0 +1,76 @@
+name: Publish CLI to npm
+
+on:
+  push:
+    branches:
+      - master
+      - main
+    paths:
+      - package.json
+  workflow_dispatch:
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: https://registry.npmjs.org
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Read package metadata
+        id: pkg
+        run: |
+          NAME=$(node -p "require('./package.json').name")
+          VERSION=$(node -p "require('./package.json').version")
+          SDK_RANGE=$(node -p "require('./package.json').dependencies['@lag0/godspeed-sdk']")
+          SDK_VERSION=$(node -e "const r=require('./package.json').dependencies['@lag0/godspeed-sdk']; console.log(String(r).replace(/^[^0-9]*/, ''))")
+          echo "name=$NAME" >> "$GITHUB_OUTPUT"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "sdk_range=$SDK_RANGE" >> "$GITHUB_OUTPUT"
+          echo "sdk_version=$SDK_VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Verify SDK dependency exists on npm
+        run: |
+          npm view "@lag0/godspeed-sdk@${{ steps.pkg.outputs.sdk_version }}" version > /dev/null
+
+      - name: Skip when version already published
+        id: exists
+        run: |
+          if npm view "${{ steps.pkg.outputs.name }}@${{ steps.pkg.outputs.version }}" version > /dev/null 2>&1; then
+            echo "published=true" >> "$GITHUB_OUTPUT"
+            echo "Version already published; skipping."
+          else
+            echo "published=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Install dependencies
+        if: steps.exists.outputs.published == 'false'
+        run: pnpm install --no-frozen-lockfile
+
+      - name: Validate
+        if: steps.exists.outputs.published == 'false'
+        run: |
+          pnpm run type-check
+          pnpm run test
+          pnpm run build
+          pnpm run smoke
+
+      - name: Publish package
+        if: steps.exists.outputs.published == 'false'
+        run: npm publish --access public --provenance
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
