@@ -30,7 +30,7 @@ describe("handleSetupSkillsCommand", () => {
 
 		expect(spawnSync).toHaveBeenCalledWith(
 			"npx",
-			["skills", "add", "Lag0/godspeed-cli"],
+			["-y", "skills", "add", "Lag0/godspeed-cli"],
 			{ stdio: "inherit" },
 		);
 		expect(stdoutSpy).toHaveBeenCalled();
@@ -45,7 +45,21 @@ describe("handleSetupSkillsCommand", () => {
 
 		expect(spawnSync).toHaveBeenCalledWith(
 			"npx",
-			["skills", "add", "syxs/godspeed-cli"],
+			["-y", "skills", "add", "syxs/godspeed-cli"],
+			{ stdio: "inherit" },
+		);
+	});
+
+	it("runs in non-interactive mode when requested", async () => {
+		vi.mocked(spawnSync).mockReturnValue({ status: 0 } as ReturnType<
+			typeof spawnSync
+		>);
+
+		await handleSetupSkillsCommand({ nonInteractive: true });
+
+		expect(spawnSync).toHaveBeenCalledWith(
+			"npx",
+			["-y", "skills", "add", "Lag0/godspeed-cli", "--all"],
 			{ stdio: "inherit" },
 		);
 	});

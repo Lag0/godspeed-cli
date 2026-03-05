@@ -8,6 +8,7 @@ const DEFAULT_SKILL_REPO = "Lag0/godspeed-cli";
 
 export interface SetupSkillsOptions {
 	repo?: string;
+	nonInteractive?: boolean;
 }
 
 export const handleSetupSkillsCommand = async (
@@ -15,17 +16,22 @@ export const handleSetupSkillsCommand = async (
 ): Promise<void> => {
 	await withCommandHandler(async () => {
 		const repo = options.repo?.trim() || DEFAULT_SKILL_REPO;
+		const commandArgs = ["-y", "skills", "add", repo];
 
-		const result = spawnSync("npx", ["skills", "add", repo], {
+		if (options.nonInteractive) {
+			commandArgs.push("--all");
+		}
+
+		const result = spawnSync("npx", commandArgs, {
 			stdio: "inherit",
 		});
 
 		if (result.error) {
 			throw new CommandRuntimeError({
 				code: "COMMAND_EXECUTION_FAILED",
-				message: `Failed to run \"npx skills add ${repo}\".`,
+				message: `Failed to run \"npx ${commandArgs.join(" ")}\".`,
 				suggestion:
-					"Ensure npx is available and try `npx skills add <owner/repo>` manually.",
+					"Ensure npx is available and try `npx -y skills add <owner/repo>` manually.",
 				cause: result.error,
 				exitCode: 1,
 			});
@@ -41,8 +47,11 @@ export const handleSetupSkillsCommand = async (
 			});
 		}
 
+		const modeLabel = options.nonInteractive
+			? "non-interactive mode"
+			: "interactive mode";
 		writeOutput(
-			`${pc.green("✓")} Skill installed from ${repo}. Run \`godspeed status --json\` to verify auth state.`,
+			`${pc.green("✓")} Skill installed from ${repo} (${modeLabel}). Run \`godspeed status --json\` to verify auth state.`,
 		);
 	});
 };

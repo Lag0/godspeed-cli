@@ -20,6 +20,7 @@ Use `godspeed` to authenticate, inspect account status, manage tasks/lists, and 
 godspeed status --json
 godspeed doctor --json
 godspeed setup skills
+godspeed setup skills --non-interactive
 godspeed tasks list --status incomplete --json
 godspeed tasks get <task_id> --json
 godspeed tasks create --title "Buy milk" --json

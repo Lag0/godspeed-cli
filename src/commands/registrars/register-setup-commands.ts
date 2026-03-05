@@ -17,6 +17,10 @@ export const registerSetupCommands = (program: Command): void => {
 			"Skill source repository",
 			"Lag0/godspeed-cli",
 		)
+		.option(
+			"--non-interactive",
+			"Run without prompts (passes --all to skills CLI)",
+		)
 		.action(async (options) => {
 			await handleSetupSkillsCommand(options);
 		});

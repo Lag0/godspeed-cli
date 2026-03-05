@@ -30,9 +30,12 @@ godspeed lists duplicate <list_id> --name "Copy" --json
 ```bash
 godspeed setup skills
 godspeed setup skill
+godspeed setup skills --non-interactive
 ```
 
-> Internally executes: `npx skills add Lag0/godspeed-cli`
+> Internally executes: `npx -y skills add Lag0/godspeed-cli`
+>
+> Non-interactive mode executes: `npx -y skills add Lag0/godspeed-cli --all`
 
 ## Diagnostics
 

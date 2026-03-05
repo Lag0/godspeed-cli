@@ -30,10 +30,22 @@ Alias:
 godspeed setup skill
 ```
 
+For non-interactive agent execution:
+
+```bash
+godspeed setup skills --non-interactive
+```
+
 Under the hood this runs:
 
 ```bash
-npx skills add Lag0/godspeed-cli
+npx -y skills add Lag0/godspeed-cli
+```
+
+And in non-interactive mode:
+
+```bash
+npx -y skills add Lag0/godspeed-cli --all
 ```
 
 To use a different source repository:
