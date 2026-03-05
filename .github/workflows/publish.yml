@@ -43,10 +43,6 @@ jobs:
           echo "sdk_range=$SDK_RANGE" >> "$GITHUB_OUTPUT"
           echo "sdk_version=$SDK_VERSION" >> "$GITHUB_OUTPUT"
 
-      - name: Verify SDK dependency exists on npm
-        run: |
-          NODE_AUTH_TOKEN="" npm view "@syxs/godspeed-sdk@${{ steps.pkg.outputs.sdk_version }}" version > /dev/null
-
       - name: Skip when version already published
         id: exists
         run: |
