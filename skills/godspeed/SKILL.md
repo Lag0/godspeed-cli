@@ -19,6 +19,7 @@ Use `godspeed` to authenticate, inspect account status, manage tasks/lists, and 
 ```bash
 godspeed status --json
 godspeed doctor --json
+godspeed setup skills
 godspeed tasks list --status incomplete --json
 godspeed tasks get <task_id> --json
 godspeed tasks create --title "Buy milk" --json

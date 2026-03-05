@@ -25,6 +25,15 @@ godspeed lists list --json
 godspeed lists duplicate <list_id> --name "Copy" --json
 ```
 
+## Setup Skills
+
+```bash
+godspeed setup skills
+godspeed setup skill
+```
+
+> Internally executes: `npx skills add Lag0/godspeed-cli`
+
 ## Diagnostics
 
 ```bash
