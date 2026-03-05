@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-vi.mock("@lag0/godspeed-sdk", () => ({
+vi.mock("@syxs/godspeed-sdk", () => ({
 	createClient: vi.fn(() => ({ client: "mock" })),
 	duplicateList: vi.fn(async () => ({ id: "list-copy", name: "Inbox copy" })),
 }));
@@ -21,7 +21,7 @@ vi.mock("../../commands/runtime/with-command-handler", () => ({
 	withCommandHandler: vi.fn(async (fn: () => Promise<unknown>) => fn()),
 }));
 
-import { createClient, duplicateList } from "@lag0/godspeed-sdk";
+import { createClient, duplicateList } from "@syxs/godspeed-sdk";
 import { handleListsDuplicateCommand } from "../../commands/lists/duplicate";
 import {
 	createCommandContext,

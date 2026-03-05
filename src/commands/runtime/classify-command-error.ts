@@ -1,4 +1,4 @@
-import { GodspeedApiError, GodspeedAuthError, GodspeedRateLimitError } from '@lag0/godspeed-sdk';
+import { GodspeedApiError, GodspeedAuthError, GodspeedRateLimitError } from '@syxs/godspeed-sdk';
 import { CommandRuntimeError, toCommandRuntimeError } from './command-error';
 
 /** Maps SDK error hierarchy to CommandRuntimeError with appropriate codes and suggestions */

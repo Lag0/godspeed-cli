@@ -1,4 +1,4 @@
-import { createClient, deleteTask } from "@lag0/godspeed-sdk";
+import { createClient, deleteTask } from "@syxs/godspeed-sdk";
 import pc from "picocolors";
 import { resolveToken } from "../../utils/token";
 import {

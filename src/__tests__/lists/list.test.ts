@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-vi.mock("@lag0/godspeed-sdk", () => ({
+vi.mock("@syxs/godspeed-sdk", () => ({
 	createClient: vi.fn(() => ({ client: "mock" })),
 	listLists: vi.fn(async () => ({ lists: [] })),
 }));
@@ -21,7 +21,7 @@ vi.mock("../../commands/runtime/with-command-handler", () => ({
 	withCommandHandler: vi.fn(async (fn: () => Promise<unknown>) => fn()),
 }));
 
-import { createClient, listLists } from "@lag0/godspeed-sdk";
+import { createClient, listLists } from "@syxs/godspeed-sdk";
 import { handleListsListCommand } from "../../commands/lists/list";
 import {
 	createCommandContext,

@@ -3,7 +3,7 @@ import {
 	listTasks,
 	type Task,
 	type TasksResponse,
-} from "@lag0/godspeed-sdk";
+} from "@syxs/godspeed-sdk";
 import pc from "picocolors";
 import { resolveToken } from "../../utils/token";
 import {

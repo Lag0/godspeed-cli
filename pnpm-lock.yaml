@@ -8,7 +8,7 @@ importers:
 
   .:
     dependencies:
-      '@lag0/godspeed-sdk':
+      '@syxs/godspeed-sdk':
         specifier: link:../godspeed-sdk
         version: link:../godspeed-sdk
       commander:

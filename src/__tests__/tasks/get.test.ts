@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-vi.mock('@lag0/godspeed-sdk', () => ({
+vi.mock('@syxs/godspeed-sdk', () => ({
   createClient: vi.fn(() => ({})),
   getTask: vi.fn(async () => ({ id: 'task-abc' })),
 }));
@@ -9,7 +9,7 @@ vi.mock('../../utils/token', () => ({
   resolveToken: vi.fn(() => 'mock-token'),
 }));
 
-import { getTask } from '@lag0/godspeed-sdk';
+import { getTask } from '@syxs/godspeed-sdk';
 import { handleTasksGetCommand } from '../../commands/tasks/get';
 
 describe('handleTasksGetCommand (TASK-02)', () => {

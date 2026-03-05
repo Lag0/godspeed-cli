@@ -36,8 +36,8 @@ jobs:
         run: |
           NAME=$(node -p "require('./package.json').name")
           VERSION=$(node -p "require('./package.json').version")
-          SDK_RANGE=$(node -p "require('./package.json').dependencies['@lag0/godspeed-sdk']")
-          SDK_VERSION=$(node -e "const r=require('./package.json').dependencies['@lag0/godspeed-sdk']; console.log(String(r).replace(/^[^0-9]*/, ''))")
+          SDK_RANGE=$(node -p "require('./package.json').dependencies['@syxs/godspeed-sdk']")
+          SDK_VERSION=$(node -e "const r=require('./package.json').dependencies['@syxs/godspeed-sdk']; console.log(String(r).replace(/^[^0-9]*/, ''))")
           echo "name=$NAME" >> "$GITHUB_OUTPUT"
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
           echo "sdk_range=$SDK_RANGE" >> "$GITHUB_OUTPUT"
@@ -45,7 +45,7 @@ jobs:
 
       - name: Verify SDK dependency exists on npm
         run: |
-          NODE_AUTH_TOKEN="" npm view "@lag0/godspeed-sdk@${{ steps.pkg.outputs.sdk_version }}" version > /dev/null
+          NODE_AUTH_TOKEN="" npm view "@syxs/godspeed-sdk@${{ steps.pkg.outputs.sdk_version }}" version > /dev/null
 
       - name: Skip when version already published
         id: exists

@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-vi.mock('@lag0/godspeed-sdk', () => ({
+vi.mock('@syxs/godspeed-sdk', () => ({
   createClient: vi.fn(() => ({})),
   deleteTask: vi.fn(async () => undefined),
 }));

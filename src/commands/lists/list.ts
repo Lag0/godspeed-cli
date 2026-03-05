@@ -3,7 +3,7 @@ import {
 	type List,
 	type ListsResponse,
 	listLists,
-} from "@lag0/godspeed-sdk";
+} from "@syxs/godspeed-sdk";
 import pc from "picocolors";
 import { resolveToken } from "../../utils/token";
 import {

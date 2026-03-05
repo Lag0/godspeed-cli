@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { CommandRuntimeError } from '../../commands/runtime/command-error';
 
-vi.mock('@lag0/godspeed-sdk', () => ({
+vi.mock('@syxs/godspeed-sdk', () => ({
   createClient: vi.fn(() => ({})),
   updateTask: vi.fn(async () => ({ id: 'task-updated' })),
 }));
