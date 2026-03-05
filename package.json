@@ -2,6 +2,11 @@
   "name": "@syxs/godspeed-cli",
   "version": "1.0.0",
   "description": "Godspeed task management CLI",
+  "homepage": "https://github.com/Lag0/godspeed-cli#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Lag0/godspeed-cli"
+  },
   "main": "dist/index.js",
   "bin": {
     "godspeed": "dist/index.js"
