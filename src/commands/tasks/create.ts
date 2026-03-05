@@ -35,8 +35,8 @@ const formatTaskReadable = (task: Task): string => {
 		lines.push(`Due: ${pc.yellow(task.due_at)}`);
 	}
 
-	if (task.labels && task.labels.length > 0) {
-		lines.push(`Labels: ${task.labels.map((label) => label.name).join(", ")}`);
+	if (task.label_ids && task.label_ids.length > 0) {
+		lines.push(`Labels: ${task.label_ids.join(", ")}`);
 	}
 
 	return lines.join("\n");

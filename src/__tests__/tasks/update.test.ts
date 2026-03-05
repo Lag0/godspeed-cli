@@ -24,16 +24,14 @@ describe('handleTasksUpdateCommand (TASK-04)', () => {
   it('throws INVALID_INPUT when complete and incomplete are both true', async () => {
     await expect(
       handleTasksUpdateCommand('id', { complete: true, incomplete: true }),
-    ).rejects.toMatchObject<Partial<CommandRuntimeError>>({
+    ).rejects.toMatchObject({
       code: 'INVALID_INPUT',
-    });
+    } satisfies Partial<CommandRuntimeError>);
   });
 
   it('throws INVALID_INPUT when no update options are provided', async () => {
-    await expect(handleTasksUpdateCommand('id', {})).rejects.toMatchObject<
-      Partial<CommandRuntimeError>
-    >({
+    await expect(handleTasksUpdateCommand('id', {})).rejects.toMatchObject({
       code: 'INVALID_INPUT',
-    });
+    } satisfies Partial<CommandRuntimeError>);
   });
 });
