@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@syxs/godspeed-sdk':
-        specifier: link:../godspeed-sdk
-        version: link:../godspeed-sdk
+        specifier: ^1.0.1
+        version: 1.0.1
       commander:
         specifier: ^14.0.3
         version: 14.0.3
@@ -373,6 +373,9 @@ packages:
   '@standard-schema/spec@1.1.0':
     resolution: {integrity: sha512-l2aFy5jALhniG5HgqrD6jXLi/rUWrKvqN/qJx6yoJsgKhblVd+iqqU4RCXavm/jPityDo5TCvKMnpjKnOriy0w==}
 
+  '@syxs/godspeed-sdk@1.0.1':
+    resolution: {integrity: sha512-6PmIO3G3rThqh5hFuRg0W8C0fdcBQQ6v26IS8PKUpQ+cc2Dtk+ipKb8kCeep6D3SBOQBfyOSkZi/04NlY4fKxg==}
+
   '@types/chai@5.2.3':
     resolution: {integrity: sha512-Mw558oeA9fFbv65/y4mHtXDs9bPnFMZAL/jxdPFUpOHHIXX91mcgEHbS5Lahr+pwZFR8A7GQleRWeI6cGFC2UA==}
 
@@ -600,6 +603,9 @@ packages:
     engines: {node: '>=8'}
     hasBin: true
 
+  zod@3.25.76:
+    resolution: {integrity: sha512-gzUt/qt81nXsFGKIFcC3YnfEAx5NkunCfnDlvuBSSFS02bcXu4Lmea0AFIUwbLWxWPx3d9p8S5QoaujKcNQxcQ==}
+
 snapshots:
 
   '@biomejs/biome@2.4.5':
@@ -793,6 +799,10 @@ snapshots:
     optional: true
 
   '@standard-schema/spec@1.1.0': {}
+
+  '@syxs/godspeed-sdk@1.0.1':
+    dependencies:
+      zod: 3.25.76
 
   '@types/chai@5.2.3':
     dependencies:
@@ -1023,3 +1033,5 @@ snapshots:
     dependencies:
       siginfo: 2.0.0
       stackback: 0.0.2
+
+  zod@3.25.76: {}
