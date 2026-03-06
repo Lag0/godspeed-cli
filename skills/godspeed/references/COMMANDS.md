@@ -22,7 +22,7 @@ godspeed tasks delete <task_id> --json
 
 ```bash
 godspeed lists list --json
-godspeed lists duplicate <list_id> --name "Copy" --json
+godspeed lists duplicate <list_id> --json
 ```
 
 ## Setup Skills

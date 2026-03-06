@@ -27,7 +27,7 @@ godspeed tasks create --title "Buy milk" --json
 godspeed tasks update <task_id> --complete --json
 godspeed tasks delete <task_id> --json
 godspeed lists list --json
-godspeed lists duplicate <list_id> --name "Sprint" --json
+godspeed lists duplicate <list_id> --json
 ```
 
 ## Authentication
