@@ -5,7 +5,7 @@
 One-liner (macOS/Linux):
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/syxs/godspeed-cli/master/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/Lag0/godspeed-cli/master/install.sh | bash
 ```
 
 Or via npm:
